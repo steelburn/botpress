@@ -22,13 +22,12 @@ type IntegrationPackageDefinition = {
   user?: integration.UserDefinition
   secrets?: Record<string, integration.SecretDefinition>
   entities?: Record<string, integration.EntityDefinition>
-  interfaces?: Record<string, integration.InterfaceInstance>
+  interfaces?: Record<string, integration.InterfaceImplementationStatement>
 }
 
 type InterfacePackageDefinition = {
   name: string
   version: string
-  templateName?: string
   entities?: Record<string, integration.EntityDefinition>
   events?: Record<string, integration.EventDefinition>
   actions?: Record<string, integration.ActionDefinition>

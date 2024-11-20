@@ -22,6 +22,4 @@ export default new IntegrationDefinition({
       description: 'Anthropic API key',
     },
   },
-}).extend(llm, ({ modelRef }) => ({
-  modelRef,
-}))
+}).extend(llm, ({ entities }) => ({ entities }))

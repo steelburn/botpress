@@ -2,7 +2,6 @@
 import { z, InterfaceDeclaration } from '@botpress/sdk'
 
 const baseItem = z.object({ id: z.string() })
-const templateName = '{{camelCase item}}{{pascalCase name}}'
 
 export default new InterfaceDeclaration({
   name: 'deletable',
@@ -27,5 +26,4 @@ export default new InterfaceDeclaration({
       },
     },
   },
-  templateName,
 })

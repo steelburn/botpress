@@ -13,7 +13,6 @@ import {
 import { CreateInterfaceBody, prepareCreateInterfaceBody, prepareUpdateInterfaceBody } from '../api/interface-body'
 import type commandDefinitions from '../command-definitions'
 import * as errors from '../errors'
-import { getImplementationStatements } from '../sdk'
 import * as utils from '../utils'
 import { BuildCommand } from './build-command'
 import { ProjectCommand } from './project-command'
@@ -474,7 +473,7 @@ export class DeployCommand extends ProjectCommand<DeployCommandDefinition> {
     api: ApiClient,
     integration: sdk.IntegrationDefinition
   ): Promise<CreateIntegrationBody['interfaces']> => {
-    const interfacesStatements = getImplementationStatements(integration)
+    const interfacesStatements = integration.interfaces ?? {}
     const interfaces: NonNullable<CreateIntegrationBody['interfaces']> = {}
     for (const [key, i] of Object.entries(interfacesStatements)) {
       const { name, version, entities, actions, events, channels } = i

@@ -85,9 +85,6 @@ export default new IntegrationDefinition({
     },
   },
 })
-  .extend(llm, ({ modelRef }) => ({ modelRef }))
-  .extend(tti, ({ imageModelRef, imageGenerationParams }) => ({
-    imageModelRef,
-    imageGenerationParams,
-  }))
-  .extend(stt, ({ speechToTextModelRef }) => ({ speechToTextModelRef }))
+  .extend(llm, ({ entities }) => ({ entities }))
+  .extend(tti, ({ entities }) => ({ entities }))
+  .extend(stt, ({ entities }) => ({ entities }))

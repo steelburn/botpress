@@ -29,7 +29,5 @@ export default new IntegrationDefinition({
     },
   },
 })
-  .extend(llm, ({ modelRef }) => ({
-    modelRef,
-  }))
-  .extend(stt, ({ speechToTextModelRef }) => ({ speechToTextModelRef }))
+  .extend(llm, ({ entities }) => ({ entities }))
+  .extend(stt, ({ entities }) => ({ entities }))

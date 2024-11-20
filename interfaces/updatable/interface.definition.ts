@@ -3,7 +3,6 @@ import { z, InterfaceDeclaration } from '@botpress/sdk'
 
 const baseItem = z.object({ id: z.string() })
 const withId = (schema: z.ZodTypeAny) => z.intersection(schema, baseItem)
-const templateName = '{{camelCase item}}{{pascalCase name}}'
 
 export default new InterfaceDeclaration({
   name: 'updatable',
@@ -31,5 +30,4 @@ export default new InterfaceDeclaration({
       },
     },
   },
-  templateName,
 })

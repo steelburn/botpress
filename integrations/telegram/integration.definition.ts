@@ -43,4 +43,4 @@ export default new IntegrationDefinition({
     },
     creation: { enabled: true, requiredTags: ['id'] },
   },
-}).extend(typingIndicator, () => ({}))
+}).extend(typingIndicator, () => ({ entities: {} }))

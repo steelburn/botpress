@@ -23,6 +23,4 @@ export default new IntegrationDefinition({
       description: 'Cerebras API key',
     },
   },
-}).extend(llm, ({ modelRef }) => ({
-  modelRef,
-}))
+}).extend(llm, ({ entities }) => ({ entities }))
