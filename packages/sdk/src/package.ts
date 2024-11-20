@@ -22,7 +22,6 @@ type IntegrationPackageDefinition = {
   user?: integration.UserDefinition
   secrets?: Record<string, integration.SecretDefinition>
   entities?: Record<string, integration.EntityDefinition>
-  interfaces?: Record<string, integration.InterfaceInstance>
 }
 
 type InterfacePackageDefinition = {

@@ -18,9 +18,8 @@ type InterfaceImplStatement = {
   channels: Record<string, { name: string }>
 }
 
-export const resolveInterfaces = <I extends sdk.IntegrationDefinition | sdk.IntegrationPackage['definition']>(
-  integration: I
-): I => {
+type IntegrationPackageDef = sdk.IntegrationPackage['definition'] & { interfaces?: Record<string, InterfaceInstance> }
+export const resolveInterfaces = <I extends sdk.IntegrationDefinition | IntegrationPackageDef>(integration: I): I => {
   const self = integration as utils.types.Writable<I>
   if (!self.interfaces) {
     return integration
