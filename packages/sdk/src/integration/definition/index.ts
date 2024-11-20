@@ -22,7 +22,7 @@ export type InterfaceImplementationStatement = {
   id?: string
   name: string
   version: string
-  entities: Record<string, { name: string; schema: z.Schema }>
+  entities: Record<string, { name: string }>
   actions: Record<string, { name: string }>
   events: Record<string, { name: string }>
   channels: Record<string, { name: string }>
@@ -215,6 +215,7 @@ export class IntegrationDefinition<
     }))
 
     const entityNames = Object.values(interfaceTypeArguments).map((e) => e.name)
+    const entitySchemas = utils.records.mapValues(interfaceTypeArguments, (e) => e.schema)
 
     const interfaceActionAliases: InterfaceImplementationStatement['actions'] = utils.records.mapValues(
       interfacePkg.definition.actions ?? {},
@@ -248,19 +249,21 @@ export class IntegrationDefinition<
 
     self.interfaces[key] = interfaceImplStatement
 
-    this._resolveInterface(interfacePkg, interfaceImplStatement)
+    this._resolveInterface(interfacePkg, interfaceImplStatement, entitySchemas)
 
     return this
   }
 
-  private _resolveInterface = (intrface: InterfacePackage, statement: InterfaceImplementationStatement): void => {
+  private _resolveInterface = (
+    intrface: InterfacePackage,
+    statement: InterfaceImplementationStatement,
+    entitySchemas: Record<string, z.Schema>
+  ): void => {
     const self = this as utils.types.Writable<IntegrationDefinition>
 
     const actions: Record<string, ActionDefinition> = {}
     const events: Record<string, EventDefinition> = {}
     const channels: Record<string, ChannelDefinition> = {}
-
-    const entitySchemas = utils.records.mapValues(statement.entities ?? {}, (entity) => entity.schema)
 
     // dereference actions
     for (const [actionName, action] of Object.entries(intrface.definition.actions ?? {})) {
