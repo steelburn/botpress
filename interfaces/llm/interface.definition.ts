@@ -35,3 +35,9 @@ export default new InterfaceDeclaration({
     },
   },
 })
+
+const schema = {
+  not: {},
+}
+
+z.any().refine()

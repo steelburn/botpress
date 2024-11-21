@@ -18,6 +18,10 @@ export const ToolChoiceSchema = z.object({
   functionName: z.string().optional().describe('Required if `type` is "specific"'),
 })
 
+type lol = {
+  content?: string | object[] | null | undefined
+}
+
 export const MessageSchema = z.object({
   role: z.enum(['user', 'assistant']),
   type: z.enum(['text', 'tool_calls', 'tool_result', 'multipart']).default('text'),

@@ -1,4 +1,4 @@
-import { IntegrationPackage } from '../package'
+import { IntegrationPackage, InterfacePackage } from '../package'
 import { SchemaDefinition } from '../schema'
 import { ValueOf, Writable } from '../utils/type-utils'
 import z, { AnyZodObject } from '../zui'
@@ -66,6 +66,7 @@ export type IntegrationConfigInstance<I extends IntegrationPackage = Integration
 )
 
 export type IntegrationInstance = IntegrationPackage & IntegrationConfigInstance
+export type InterfaceInstance = InterfacePackage
 
 export type BotDefinitionProps<
   TStates extends BaseStates = BaseStates,
@@ -74,6 +75,9 @@ export type BotDefinitionProps<
 > = {
   integrations?: {
     [K: string]: IntegrationInstance
+  }
+  interfaces?: {
+    [K: string]: InterfaceInstance
   }
   user?: UserDefinition
   conversation?: ConversationDefinition
@@ -97,6 +101,7 @@ export class BotDefinition<
   TActions extends BaseActions = BaseActions
 > {
   public readonly integrations: this['props']['integrations']
+  public readonly interfaces: this['props']['interfaces']
   public readonly user: this['props']['user']
   public readonly conversation: this['props']['conversation']
   public readonly message: this['props']['message']
@@ -107,6 +112,7 @@ export class BotDefinition<
   public readonly actions: this['props']['actions']
   public constructor(public readonly props: BotDefinitionProps<TStates, TEvents, TActions>) {
     this.integrations = props.integrations
+    this.interfaces = props.interfaces
     this.user = props.user
     this.conversation = props.conversation
     this.message = props.message
@@ -117,7 +123,19 @@ export class BotDefinition<
     this.actions = props.actions
   }
 
-  public add<I extends IntegrationPackage>(integrationPkg: I, config: IntegrationConfigInstance<I>): this {
+  public add<I extends IntegrationPackage>(integrationPkg: I, config: IntegrationConfigInstance<I>): this
+  public add<I extends InterfacePackage>(interfacePackage: I, config?: object): this
+  public add(pkg: IntegrationPackage | InterfacePackage, config?: object): this {
+    if (pkg.type === 'integration') {
+      return this._addIntegration(pkg as IntegrationPackage, config as IntegrationConfigInstance)
+    }
+    if (pkg.type === 'interface') {
+      return this._addInterface(pkg as InterfacePackage)
+    }
+    return this
+  }
+
+  private _addIntegration<I extends IntegrationPackage>(integrationPkg: I, config: IntegrationConfigInstance<I>): this {
     const self = this as Writable<BotDefinition>
     if (!self.integrations) {
       self.integrations = {}
@@ -129,6 +147,15 @@ export class BotDefinition<
       configurationType: config.configurationType as string,
       configuration: config.configuration,
     }
+    return this
+  }
+
+  private _addInterface<I extends InterfacePackage>(interfacePackage: I): this {
+    const self = this as Writable<BotDefinition>
+    if (!self.interfaces) {
+      self.interfaces = {}
+    }
+    self.interfaces[interfacePackage.definition.name] = interfacePackage
     return this
   }
 }
