@@ -13,8 +13,6 @@
   },
   "devDependencies": {
     "@bpinternal/genenv": "0.0.1",
-    "@types/node": "^18.11.17",
-    "execa": "^8.0.1",
     "@botpress/common": "workspace:*",
     "@botpresshub/telegram": "workspace:*",
     "@botpresshub/zendesk": "workspace:*"
