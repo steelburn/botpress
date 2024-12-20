@@ -2,7 +2,7 @@ import { test } from 'vitest'
 import { EmptyPlugin, FooBarBazPlugin } from '../../fixtures'
 import { ActionProxy } from './types'
 import * as utils from '../../utils/type-utils'
-import { BasePlugin } from '../types'
+import { BaseBot } from '../types'
 
 test('ActionProxy of FooBarBazPlugin should reflect actions of bot, integration and interface deps', async () => {
   type Actual = ActionProxy<FooBarBazPlugin>
@@ -56,7 +56,7 @@ test('ActionProxy of EmptyPlugin should be almost empty', async () => {
 })
 
 test('ActionProxy of BasePlugin should be a record', async () => {
-  type Actual = ActionProxy<BasePlugin>
+  type Actual = ActionProxy<BaseBot>
   type Expected = {
     [x: string]: {
       [x: string]: (args: any) => Promise<any>

@@ -1,3 +1,4 @@
+import { BotInterfaceExtensions } from 'src/bot/types'
 import * as utils from '../utils'
 import {
   MessageHandlersMap,
@@ -12,7 +13,7 @@ import {
   ActionHandlers,
   BotHandlers,
 } from './server/types'
-import { PluginInterfaceExtension } from './types'
+
 import { BasePlugin } from './types/generic'
 
 export type PluginImplementationProps<TPlugin extends BasePlugin = BasePlugin> = {
@@ -21,9 +22,7 @@ export type PluginImplementationProps<TPlugin extends BasePlugin = BasePlugin> =
 
 export type PluginRuntimeProps<TPlugin extends BasePlugin = BasePlugin> = {
   configuration: TPlugin['configuration']
-  interfaces: {
-    [K in keyof TPlugin['interfaces']]: PluginInterfaceExtension<TPlugin['interfaces'][K]>
-  }
+  interfaces: BotInterfaceExtensions<TPlugin>
 }
 
 export class PluginImplementation<TPlugin extends BasePlugin = BasePlugin> implements BotHandlers<TPlugin> {

@@ -1,8 +1,8 @@
 import { IntegrationPackage, PluginPackage } from '../package'
-import { PluginInterfaceExtension } from '../plugin'
 import { SchemaDefinition } from '../schema'
 import { ValueOf, Writable } from '../utils/type-utils'
 import z, { ZuiObjectSchema } from '../zui'
+import { BotInterfaceExtensions } from './types'
 
 type BaseConfig = ZuiObjectSchema
 type BaseStates = Record<string, ZuiObjectSchema>
@@ -67,10 +67,11 @@ export type IntegrationConfigInstance<I extends IntegrationPackage = Integration
     }>
 )
 
+type AnyPluginInterfaceExtension = BotInterfaceExtensions<any>[string]
 export type PluginConfigInstance<P extends PluginPackage = PluginPackage> = {
   configuration: z.infer<NonNullable<P['definition']['configuration']>['schema']>
   interfaces: {
-    [I in keyof NonNullable<P['definition']['interfaces']>]: PluginInterfaceExtension
+    [I in keyof NonNullable<P['definition']['interfaces']>]: AnyPluginInterfaceExtension
   }
 }
 
