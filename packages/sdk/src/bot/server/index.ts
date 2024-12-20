@@ -3,6 +3,7 @@ import { log } from '../../log'
 import { retryConfig } from '../../retry'
 import { Request, Response, parseBody } from '../../serve'
 import * as utils from '../../utils/type-utils'
+import { proxy } from '../action-proxy'
 import { BotLogger } from '../bot-logger'
 import { BotSpecificClient } from '../client'
 import * as common from '../types'
@@ -38,11 +39,14 @@ export const botHandler =
             ...globalBeforeOutgoingMessageHooks,
           ]
           for (const handler of beforeOutgoingMessageHooks) {
+            const client = new BotSpecificClient(vanillaClient)
+            const actions = proxy(client)
             const hookOutput = await handler({
-              client: new BotSpecificClient(vanillaClient),
+              client,
               ctx,
               logger,
               data: req,
+              actions,
             })
             req = hookOutput?.data ?? req
           }
@@ -56,11 +60,14 @@ export const botHandler =
             ...globalBeforeOutgoingCallActionHooks,
           ]
           for (const handler of beforeOutgoingCallActionHooks) {
+            const client = new BotSpecificClient(vanillaClient)
+            const actions = proxy(client)
             const hookOutput = await handler({
-              client: new BotSpecificClient(vanillaClient),
+              client,
               ctx,
               logger,
               data: req,
+              actions,
             })
             req = hookOutput?.data ?? req
           }
@@ -73,11 +80,14 @@ export const botHandler =
           const globalAfterOutgoingMessageHooks = bot.hookHandlers.after_outgoing_message['*'] ?? []
           const afterOutgoingMessageHooks = [...specificAfterOutgoingMessageHooks, ...globalAfterOutgoingMessageHooks]
           for (const handler of afterOutgoingMessageHooks) {
+            const client = new BotSpecificClient(vanillaClient)
+            const actions = proxy(client)
             const hookOutput = await handler({
-              client: new BotSpecificClient(vanillaClient),
+              client,
               ctx,
               logger,
               data: res,
+              actions,
             })
             res = hookOutput?.data ?? res
           }
@@ -92,11 +102,14 @@ export const botHandler =
             ...globalAfterOutgoingCallActionHooks,
           ]
           for (const handler of afterOutgoingCallActionHooks) {
+            const client = new BotSpecificClient(vanillaClient)
+            const actions = proxy(client)
             const hookOutput = await handler({
-              client: new BotSpecificClient(vanillaClient),
+              client,
               ctx,
               logger,
               data: res,
+              actions,
             })
             res = hookOutput?.data ?? res
           }
@@ -105,10 +118,12 @@ export const botHandler =
       },
     })
 
+    const actions = proxy(botClient)
     const props: ServerProps = {
       req,
       ctx,
       logger,
+      actions,
       client: botClient,
       self: bot,
     }
@@ -144,6 +159,8 @@ const onEventReceived = async ({ ctx, logger, req, client, self }: ServerProps):
   type AnyEventPayload = utils.ValueOf<types.EventPayloads<common.BaseBot>>
   const body = parseBody<AnyEventPayload>(req)
 
+  const actions = proxy(client)
+
   if (ctx.type === 'message_created') {
     const event = body.event
     let message: client.Message = event.payload.message
@@ -156,6 +173,7 @@ const onEventReceived = async ({ ctx, logger, req, client, self }: ServerProps):
         ctx,
         logger,
         data: message,
+        actions,
       })
       message = hookOutput?.data ?? message
       if (hookOutput?.stop) {
@@ -181,6 +199,7 @@ const onEventReceived = async ({ ctx, logger, req, client, self }: ServerProps):
         client,
         ctx,
         logger,
+        actions,
       })
     }
 
@@ -193,6 +212,7 @@ const onEventReceived = async ({ ctx, logger, req, client, self }: ServerProps):
         ctx,
         data: message,
         logger,
+        actions,
       })
       message = hookOutput?.data ?? message
       if (hookOutput?.stop) {
@@ -215,6 +235,7 @@ const onEventReceived = async ({ ctx, logger, req, client, self }: ServerProps):
         client,
         ctx,
         logger,
+        actions,
       })
     }
     return SUCCESS_RESPONSE
@@ -230,6 +251,7 @@ const onEventReceived = async ({ ctx, logger, req, client, self }: ServerProps):
       ctx,
       data: event,
       logger,
+      actions,
     })
     event = hookOutput?.data ?? event
     if (hookOutput?.stop) {
@@ -248,6 +270,7 @@ const onEventReceived = async ({ ctx, logger, req, client, self }: ServerProps):
       client,
       ctx,
       logger,
+      actions,
     })
   }
 
@@ -260,6 +283,7 @@ const onEventReceived = async ({ ctx, logger, req, client, self }: ServerProps):
       ctx,
       data: event,
       logger,
+      actions,
     })
     event = hookOutput?.data ?? event
     if (hookOutput?.stop) {
@@ -284,7 +308,8 @@ const onActionTriggered = async ({ ctx, logger, req, client, self }: ServerProps
     throw new Error(`Action ${type} not found`)
   }
 
-  const output = await action({ ctx, logger, input, client, type })
+  const actions = proxy(client)
+  const output = await action({ ctx, logger, input, client, type, actions })
 
   const response = { output }
   return {

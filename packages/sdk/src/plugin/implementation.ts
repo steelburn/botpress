@@ -1,4 +1,4 @@
-import { BotInterfaceExtensions } from 'src/bot/types'
+import { BotInterfaceExtensions } from '../bot/types'
 import * as utils from '../utils'
 import {
   MessageHandlersMap,

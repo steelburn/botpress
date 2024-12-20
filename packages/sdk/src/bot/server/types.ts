@@ -1,6 +1,7 @@
 import * as client from '@botpress/client'
 import * as plugin from '../../plugin'
 import * as utils from '../../utils/type-utils'
+import { ActionProxy } from '../action-proxy'
 import { type BotLogger } from '../bot-logger'
 import { BotSpecificClient } from '../client'
 import * as types from '../types'
@@ -110,6 +111,7 @@ export type CommonHandlerProps<TBot extends types.BaseBot> = {
   ctx: BotContext
   logger: BotLogger
   client: BotClient<TBot>
+  actions: (interfaces: types.BotInterfaceExtensions<TBot>) => ActionProxy<TBot>
 }
 
 export type MessagePayloads<TBot extends types.BaseBot> = {

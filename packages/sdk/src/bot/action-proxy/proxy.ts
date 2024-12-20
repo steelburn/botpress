@@ -2,32 +2,31 @@ import { BotSpecificClient } from '../../bot'
 import { BaseBot, BotInterfaceExtensions } from '../types'
 import { ActionProxy } from './types'
 
-export const proxy = <TBot extends BaseBot>(
-  client: BotSpecificClient<TBot>,
-  interfaces: BotInterfaceExtensions<TBot>
-): ActionProxy<TBot> =>
-  new Proxy<Partial<ActionProxy<TBot>>>(
-    {},
-    {
-      get: (_target, prop1) => {
-        return new Proxy(
-          {},
-          {
-            get: (_target, prop2) => {
-              return (input: unknown) =>
-                _callAction({
-                  client,
-                  interfaces,
-                  integrationOrInterfaceName: prop1 as string,
-                  methodName: prop2 as string,
-                  input,
-                })
-            },
-          }
-        )
-      },
-    }
-  ) as ActionProxy<TBot>
+export const proxy =
+  <TBot extends BaseBot>(client: BotSpecificClient<TBot>) =>
+  (interfaces: BotInterfaceExtensions<TBot>): ActionProxy<TBot> =>
+    new Proxy<Partial<ActionProxy<TBot>>>(
+      {},
+      {
+        get: (_target, prop1) => {
+          return new Proxy(
+            {},
+            {
+              get: (_target, prop2) => {
+                return (input: unknown) =>
+                  _callAction({
+                    client,
+                    interfaces,
+                    integrationOrInterfaceName: prop1 as string,
+                    methodName: prop2 as string,
+                    input,
+                  })
+              },
+            }
+          )
+        },
+      }
+    ) as ActionProxy<TBot>
 
 type CallActionsProps = {
   client: BotSpecificClient<any>
