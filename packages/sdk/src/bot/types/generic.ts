@@ -1,7 +1,9 @@
 import { BaseIntegration, DefaultIntegration, InputBaseIntegration } from '../../integration/types/generic'
+import { BaseInterface } from '../../interface'
 import * as utils from '../../utils/type-utils'
 
 export * from '../../integration/types/generic'
+export * from '../../interface/types/generic'
 
 export type BaseAction = {
   input: any
@@ -10,6 +12,7 @@ export type BaseAction = {
 
 export type BaseBot = {
   integrations: Record<string, BaseIntegration>
+  interfaces: Record<string, BaseInterface>
   events: Record<string, any>
   states: Record<string, any>
   actions: Record<string, BaseAction>
@@ -34,5 +37,10 @@ export type DefaultBot<B extends InputBaseBot> = {
     ? BaseBot['integrations']
     : {
         [K in keyof B['integrations']]: DefaultIntegration<utils.Cast<B['integrations'][K], InputBaseIntegration>>
+      }
+  interfaces: undefined extends B['interfaces']
+    ? BaseBot['interfaces']
+    : {
+        [K in keyof B['interfaces']]: utils.Cast<B['interfaces'][K], BaseInterface>
       }
 }

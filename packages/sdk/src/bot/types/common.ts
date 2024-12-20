@@ -1,5 +1,5 @@
 import { Join, UnionToIntersection, Split, Cast } from '../../utils/type-utils'
-import { BaseBot } from './generic'
+import { BaseBot, BaseInterface } from './generic'
 
 export type EventDefinition = BaseBot['events'][string]
 export type StateDefinition = BaseBot['states'][string]
@@ -102,4 +102,21 @@ export type EnumerateMessages<TBot extends BaseBot> = UnionToIntersection<
 
 export type GetMessages<TBot extends BaseBot> = {
   [K in keyof EnumerateMessages<TBot> as Cast<Split<K, ':'>[2], string>]: EnumerateMessages<TBot>[K]
+}
+
+/**
+ * Used by a bot to tell which integration should be used to implement which interface
+ */
+type BotInterfaceExtension<TInterface extends BaseInterface = BaseInterface> = {
+  id?: string // id of the integration to use
+  name: string // name of the integration to use
+  version: string // version of the integration to use
+  entities: { [K in keyof TInterface['entities']]: { name: string } }
+  actions: { [K in keyof TInterface['actions']]: { name: string } }
+  events: { [K in keyof TInterface['events']]: { name: string } }
+  channels: { [K in keyof TInterface['channels']]: { name: string } }
+}
+
+export type BotInterfaceExtensions<TBot extends BaseBot> = {
+  [K in keyof TBot['interfaces']]: BotInterfaceExtension<TBot['interfaces'][K]>
 }

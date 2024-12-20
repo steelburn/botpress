@@ -1,14 +1,10 @@
 import * as utils from '../../utils/type-utils'
 
-export type BaseChannel = {
+type BaseChannel = {
   messages: Record<string, any>
 }
 
-export type BaseUser = {
-  tags: Record<string, any>
-}
-
-export type BaseAction = {
+type BaseAction = {
   input: any
   output: any
 }
@@ -22,8 +18,8 @@ export type BaseInterface = {
   entities: Record<string, any>
 }
 
-export type InputBaseChannel = utils.DeepPartial<BaseChannel>
-export type DefaultChannel<C extends InputBaseChannel> = {
+type InputBaseChannel = utils.DeepPartial<BaseChannel>
+type DefaultChannel<C extends InputBaseChannel> = {
   messages: utils.Default<C['messages'], BaseChannel['messages']>
 }
 

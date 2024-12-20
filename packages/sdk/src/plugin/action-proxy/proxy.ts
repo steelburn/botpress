@@ -1,11 +1,10 @@
 import { BotSpecificClient } from '../../bot'
-import { PluginInterfaceExtension, PluginRuntimeProps } from '../../plugin'
-import { BasePlugin } from '../types'
+import { BasePlugin, PluginInterfaceExtensions } from '../types'
 import { ActionProxy } from './types'
 
 export const proxy = <TPlugin extends BasePlugin>(
   client: BotSpecificClient<TPlugin>,
-  runtime: PluginRuntimeProps<TPlugin>
+  interfaces: PluginInterfaceExtensions<TPlugin>
 ): ActionProxy<TPlugin> =>
   new Proxy<Partial<ActionProxy<TPlugin>>>(
     {},
@@ -18,7 +17,7 @@ export const proxy = <TPlugin extends BasePlugin>(
               return (input: unknown) =>
                 _callAction({
                   client,
-                  runtime,
+                  interfaces,
                   integrationOrInterfaceName: prop1 as string,
                   methodName: prop2 as string,
                   input,
@@ -32,13 +31,13 @@ export const proxy = <TPlugin extends BasePlugin>(
 
 type CallActionsProps = {
   client: BotSpecificClient<any>
-  runtime: PluginRuntimeProps<any>
+  interfaces: PluginInterfaceExtensions<any>
   integrationOrInterfaceName: string
   methodName: string
   input: unknown
 }
-const _callAction = async ({ client, runtime, integrationOrInterfaceName, methodName, input }: CallActionsProps) => {
-  const interfaceExtension: PluginInterfaceExtension<any> = runtime.interfaces[integrationOrInterfaceName] ?? {
+const _callAction = async ({ client, interfaces, integrationOrInterfaceName, methodName, input }: CallActionsProps) => {
+  const interfaceExtension = interfaces[integrationOrInterfaceName] ?? {
     name: integrationOrInterfaceName,
     version: '0.0.0',
     entities: {},
