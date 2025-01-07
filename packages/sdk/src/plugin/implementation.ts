@@ -8,7 +8,7 @@ import {
   BotHandlers,
 } from '../bot'
 import * as utils from '../utils'
-import { ActionProxy, proxy } from './action-proxy'
+import * as proxy from './proxies'
 import {
   MessageHandlersMap,
   MessageHandlers,
@@ -36,7 +36,7 @@ export type PluginRuntimeProps<TPlugin extends BasePlugin = BasePlugin> = {
 type Tools<TPlugin extends BasePlugin = BasePlugin> = {
   configuration: PluginConfiguration<TPlugin>
   interfaces: PluginInterfaceExtensions<TPlugin>
-  actions: ActionProxy<TPlugin>
+  actions: proxy.actions.ActionProxy<TPlugin>
 }
 
 export class PluginImplementation<TPlugin extends BasePlugin = BasePlugin> implements BotHandlers<TPlugin> {
@@ -74,7 +74,7 @@ export class PluginImplementation<TPlugin extends BasePlugin = BasePlugin> imple
     }
     const { configuration, interfaces } = this._runtimeProps
     const client = new Client()
-    const actions = proxy(client, interfaces) as ActionProxy<BasePlugin>
+    const actions = proxy.actions.proxy(client, interfaces) as proxy.actions.ActionProxy<BasePlugin>
     return {
       configuration,
       interfaces,

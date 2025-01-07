@@ -1,6 +1,6 @@
 import { Client } from '@botpress/client'
-import { BotSpecificClient } from '../../bot'
-import { BasePlugin, PluginInterfaceExtensions } from '../types'
+import { BotSpecificClient } from '../../../bot'
+import { BasePlugin, PluginInterfaceExtensions } from '../../types'
 import { ActionProxy } from './types'
 
 export const proxy = <TPlugin extends BasePlugin>(
