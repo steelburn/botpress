@@ -1,4 +1,5 @@
-import { createServer, IncomingMessage, Server } from 'node:http'
+import { isNode } from 'browser-or-node'
+import type * as http from 'node:http'
 import { log } from './log'
 
 export type Request = {
@@ -28,8 +29,14 @@ export async function serve(
   handler: Handler,
   port: number = 8072,
   callback: (port: number) => void = defaultCallback
-): Promise<Server> {
-  /* eslint-disable @typescript-eslint/no-misused-promises */
+): Promise<http.Server> {
+  if (!isNode) {
+    throw new Error('This function can only be called in Node.js')
+  }
+
+  const { createServer } = require('node:http') as typeof http
+
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   const server = createServer(async (req, res) => {
     try {
       const request = await mapIncomingMessageToRequest(req)
@@ -49,7 +56,7 @@ export async function serve(
   return server
 }
 
-async function mapIncomingMessageToRequest(incoming: IncomingMessage): Promise<Request> {
+async function mapIncomingMessageToRequest(incoming: http.IncomingMessage): Promise<Request> {
   const body = await readBody(incoming)
   const headers = {} as Request['headers']
 
@@ -77,7 +84,7 @@ function trimPrefix(value: string, prefix: string) {
   return value.indexOf(prefix) === 0 ? value.slice(prefix.length) : value
 }
 
-async function readBody(incoming: IncomingMessage) {
+async function readBody(incoming: http.IncomingMessage) {
   return new Promise<string | undefined>((resolve, reject) => {
     if (incoming.method !== 'POST' && incoming.method !== 'PUT' && incoming.method !== 'PATCH') {
       return resolve(undefined)
