@@ -345,12 +345,24 @@ export abstract class ProjectCommand<C extends ProjectCommandDefinition> extends
     const integrations = await this._fetchDependencies(botDef.integrations ?? {}, ({ name, version }) =>
       api.getPublicOrPrivateIntegration({ type: 'name', name, version })
     )
-    const plugins = await this._fetchDependencies(botDef.plugins ?? {}, ({ name, version, interfaces }) => ({
-      ...api.getPublicOrPrivatePlugin({ type: 'name', name, version }),
-      interfaces: this._fetchDependencies(interfaces ?? {}, (integration) =>
-        api.getPublicOrPrivateIntegration({ ...integration, type: 'name' })
+
+    type PluginInstance = NonNullable<sdk.BotDefinitionProps['plugins']>[string] & { id: string }
+    type PluginInterfaceExtension = PluginInstance['interfaces'][string]
+
+    const plugins = (await this._fetchDependencies(botDef.plugins ?? {}, async ({ name, version, interfaces }) => ({
+      ...(await api.getPublicOrPrivatePlugin({ type: 'name', name, version })),
+      interfaces: await this._fetchDependencies(
+        interfaces ?? {},
+        async (interfaceExtension) =>
+          await api
+            .getPublicOrPrivateIntegration({ ...interfaceExtension, type: 'name' })
+            .then((integration) => ({ ...integration, integrationId: integration.id }))
       ),
-    }))
+    }))) as Record<
+      string,
+      PluginInstance & { interfaces: Record<string, PluginInterfaceExtension & { integrationId: string }> }
+    >
+
     return {
       integrations: _(integrations)
         .keyBy((i) => i.id)
