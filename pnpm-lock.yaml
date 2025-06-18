@@ -17,8 +17,8 @@ importers:
         specifier: ^3.564.0
         version: 3.709.0
       '@botpress/api':
-        specifier: 1.18.0
-        version: 1.18.0(openapi-types@12.1.3)
+        specifier: 1.23.0
+        version: 1.23.0(openapi-types@12.1.3)
       '@botpress/cli':
         specifier: workspace:*
         version: link:packages/cli
@@ -1926,7 +1926,7 @@ importers:
         specifier: 0.5.1
         version: link:../chat-client
       '@botpress/client':
-        specifier: 1.15.1
+        specifier: 1.16.0
         version: link:../client
       '@botpress/sdk':
         specifier: 4.9.0
@@ -2038,7 +2038,7 @@ importers:
   packages/cli/templates/empty-bot:
     dependencies:
       '@botpress/client':
-        specifier: 1.15.1
+        specifier: 1.16.0
         version: link:../../../client
       '@botpress/sdk':
         specifier: 4.9.0
@@ -2054,7 +2054,7 @@ importers:
   packages/cli/templates/empty-integration:
     dependencies:
       '@botpress/client':
-        specifier: 1.15.1
+        specifier: 1.16.0
         version: link:../../../client
       '@botpress/sdk':
         specifier: 4.9.0
@@ -2083,7 +2083,7 @@ importers:
   packages/cli/templates/hello-world:
     dependencies:
       '@botpress/client':
-        specifier: 1.15.1
+        specifier: 1.16.0
         version: link:../../../client
       '@botpress/sdk':
         specifier: 4.9.0
@@ -2099,7 +2099,7 @@ importers:
   packages/cli/templates/webhook-message:
     dependencies:
       '@botpress/client':
-        specifier: 1.15.1
+        specifier: 1.16.0
         version: link:../../../client
       '@botpress/sdk':
         specifier: 4.9.0
@@ -2237,7 +2237,7 @@ importers:
         specifier: ^7.26.3
         version: 7.26.9
       '@botpress/client':
-        specifier: 1.15.1
+        specifier: 1.16.0
         version: link:../client
       '@botpress/cognitive':
         specifier: 0.1.25
@@ -2340,7 +2340,7 @@ importers:
   packages/sdk:
     dependencies:
       '@botpress/client':
-        specifier: 1.15.1
+        specifier: 1.16.0
         version: link:../client
       '@bpinternal/zui':
         specifier: ^1.0.0
@@ -2371,7 +2371,7 @@ importers:
   packages/vai:
     dependencies:
       '@botpress/client':
-        specifier: 1.15.1
+        specifier: 1.16.0
         version: link:../client
       '@bpinternal/thicktoken':
         specifier: ^1.0.1
@@ -3823,7 +3823,7 @@ packages:
     resolution: {integrity: sha512-RJlIHRueQgwWitWgF8OdFYGZX328Ax5BCemNGlqHfplnRT9ESi8JkFlvaVYbS+UubVY6dpv87Fs2u5M29iNFVQ==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/helper-validator-identifier': 7.25.9
+      '@babel/helper-validator-identifier': 7.27.1
       js-tokens: 4.0.0
       picocolors: 1.1.1
 
@@ -3988,7 +3988,7 @@ packages:
     dependencies:
       '@babel/core': 7.26.9
       '@babel/helper-module-imports': 7.25.9
-      '@babel/helper-validator-identifier': 7.25.9
+      '@babel/helper-validator-identifier': 7.27.1
       '@babel/traverse': 7.26.9
     transitivePeerDependencies:
       - supports-color
@@ -4310,7 +4310,7 @@ packages:
     resolution: {integrity: sha512-qyRplbeIpNZhmzOysF/wFMuP9sctmh2cFzRAZOn1YapxBsE1i9bJIY586R/WBLfLcmcBlM8ROBiQURnnNy+zfA==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/code-frame': 7.26.2
+      '@babel/code-frame': 7.27.1
       '@babel/parser': 7.26.9
       '@babel/types': 7.26.9
 
@@ -4377,8 +4377,8 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@botpress/api@1.18.0(openapi-types@12.1.3):
-    resolution: {integrity: sha512-MCjcSPcQDF9SnupuLkKqOsyTD0TSzPLg15ff1cnX09yuK4X6sb9eWn1IesOdChvH2K4ua9F3C8Q1uj8287y+8g==}
+  /@botpress/api@1.23.0(openapi-types@12.1.3):
+    resolution: {integrity: sha512-MYpmt5q/tJ02qaosFbk95v8YJYCM6+7w2eOYKHEgJz22NSp+0GO7gOeLr6XvqZDZC3GjYYLCoJsyUebn5G3nsg==}
     dependencies:
       '@bpinternal/opapi': 0.14.0(openapi-types@12.1.3)
     transitivePeerDependencies:
