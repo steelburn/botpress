@@ -346,28 +346,30 @@ export abstract class ProjectCommand<C extends ProjectCommandDefinition> extends
       api.getPublicOrPrivateIntegration({ type: 'name', name, version })
     )
 
-    type PluginInstance = NonNullable<sdk.BotDefinitionProps['plugins']>[string] & { id: string }
-    type PluginInterfaceExtension = PluginInstance['interfaces'][string]
+    const plugins = await this._fetchDependencies(
+      botDef.plugins ?? {},
+      async ({ name, version }) => await api.getPublicOrPrivatePlugin({ type: 'name', name, version })
+    )
 
-    const plugins = (await this._fetchDependencies(botDef.plugins ?? {}, async ({ name, version, interfaces }) => ({
-      ...(await api.getPublicOrPrivatePlugin({ type: 'name', name, version })),
+    const pluginsWithBackingIntegrations = await utils.records.mapValuesAsync(plugins, async (plugin) => ({
+      ...plugin,
       interfaces: await this._fetchDependencies(
-        interfaces ?? {},
-        async (interfaceExtension) =>
-          await api
-            .getPublicOrPrivateIntegration({ ...interfaceExtension, type: 'name' })
-            .then((integration) => ({ ...integration, integrationId: integration.id }))
+        plugin.interfaces ?? {},
+        async (interfaceExtension) => await api.getPublicOrPrivateIntegration({ ...interfaceExtension, type: 'name' })
       ),
-    }))) as Record<
-      string,
-      PluginInstance & { interfaces: Record<string, PluginInterfaceExtension & { integrationId: string }> }
-    >
+    }))
 
     return {
       integrations: _(integrations)
         .keyBy((i) => i.id)
         .value(),
-      plugins,
+      plugins: utils.records.mapValues(pluginsWithBackingIntegrations, (plugin) => ({
+        ...plugin,
+        interfaces: utils.records.mapValues(plugin.interfaces ?? {}, (iface) => ({
+          ...iface,
+          integrationId: iface.id,
+        })),
+      })),
     }
   }
 
